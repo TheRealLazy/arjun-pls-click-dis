@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics & Mechanics Explorer: Grade 11 Interdisciplinary Module</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+        .tab-active { border-bottom: 4px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+        canvas { background-color: #0f172a; border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 p-6 text-center shadow-md">
+        <h1 class="text-3xl font-extrabold text-blue-400">Physics & Mechanics Explorer</h1>
+        <p class="text-slate-400 text-sm mt-1">Grade 11 Core Mechanics: Projectile Motion to Solid Mechanics</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex justify-center bg-slate-800 border-b border-slate-700 overflow-x-auto shadow-inner">
+        <button onclick="switchTab('projectile')" id="tab-projectile" class="tab-active px-4 py-3 text-sm whitespace-nowrap transition">1. Projectile Motion</button>
+        <button onclick="switchTab('laws')" id="tab-laws" class="px-4 py-3 text-slate-400 hover:text-blue-400 text-sm whitespace-nowrap transition">2. Laws of Motion</button>
+        <button onclick="switchTab('particles')" id="tab-particles" class="px-4 py-3 text-slate-400 hover:text-blue-400 text-sm whitespace-nowrap transition">3. System of Particles</button>
+        <button onclick="switchTab('gravitation')" id="tab-gravitation" class="px-4 py-3 text-slate-400 hover:text-blue-400 text-sm whitespace-nowrap transition">4. Gravitation</button>
+        <button onclick="switchTab('motors')" id="tab-motors" class="px-4 py-3 text-slate-400 hover:text-blue-400 text-sm whitespace-nowrap transition">5. Motors & Torque</button>
+        <button onclick="switchTab('solids')" id="tab-solids" class="px-4 py-3 text-slate-400 hover:text-blue-400 text-sm whitespace-nowrap transition">6. Stress & Strain</button>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto p-6 space-y-6">
+
+        <!-- 1. Projectile Motion -->
+        <section id="sec-projectile" class="space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-400">1. Projectile Motion in Ballistics & Sports</h2>
+                <p class="text-slate-300 mt-2">Models two-dimensional motion under constant gravitational acceleration ($g = 9.81\text{ m/s}^2$). Evaluates flight paths in physical meters.</p>
+                <div class="mt-4 bg-slate-900 p-4 rounded-lg text-center overflow-x-auto">
+                    $$T = \frac{2v_0 \sin\theta}{g} \quad | \quad H = \frac{v_0^2 \sin^2\theta}{2g} \quad | \quad R = \frac{v_0^2 \sin(2\theta)}{g}$$
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4 shadow">
+                    <h3 class="font-bold text-lg text-slate-200">Simulation Controls</h3>
+                    <div>
+                        <label class="text-xs text-slate-400">Velocity ($v_0$): <span id="val-v0" class="text-blue-400 font-bold">25 m/s</span></label>
+                        <input type="range" id="input-v0" min="5" max="50" value="25" class="w-full accent-blue-500 mt-1" oninput="runProjectileSim()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Angle ($\theta$): <span id="val-angle" class="text-blue-400 font-bold">45°</span></label>
+                        <input type="range" id="input-angle" min="5" max="85" value="45" class="w-full accent-blue-500 mt-1" oninput="runProjectileSim()">
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded text-sm space-y-1">
+                        <p>Range ($R$): <span id="out-proj-r" class="font-bold text-green-400">0</span> m</p>
+                        <p>Max Height ($H$): <span id="out-proj-h" class="font-bold text-green-400">0</span> m</p>
+                        <p>Flight Time ($T$): <span id="out-proj-t" class="font-bold text-green-400">0</span> s</p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
+                    <canvas id="canvas-projectile" width="600" height="300" class="w-full h-auto"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Laws of Motion -->
+        <section id="sec-laws" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-400">2. Laws of Motion & Automotive Safety</h2>
+                <p class="text-slate-300 mt-2">Explore Newton's Second Law and the Impulse-Momentum Theorem in collision safety design (crumple zones).</p>
+                <div class="mt-4 bg-slate-900 p-4 rounded-lg text-center overflow-x-auto">
+                    $$J = \int F \, dt = F_{\text{avg}} \Delta t = m(v - u)$$
+                </div>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4 shadow">
+                <h3 class="font-bold text-lg text-slate-200">Crumple Zone Force Calculator</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400">Vehicle Mass ($m$ in kg):</label>
+                        <input type="number" id="input-car-m" value="1200" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcCollisionForce()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Initial Speed ($u$ in m/s):</label>
+                        <input type="number" id="input-car-u" value="20" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcCollisionForce()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Crumple Time ($\Delta t$ in s):</label>
+                        <input type="number" id="input-car-dt" value="0.15" step="0.01" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcCollisionForce()">
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-lg flex justify-around text-center">
+                    <div>
+                        <p class="text-xs text-slate-400">Momentum Change ($\Delta p$)</p>
+                        <p id="out-car-dp" class="text-xl font-bold text-blue-400">0 N·s</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Impact Force ($F_{\text{avg}}$)</p>
+                        <p id="out-car-f" class="text-xl font-bold text-red-400">0 kN</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. System of Particles -->
+        <section id="sec-particles" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-400">3. System of Particles & Center of Mass</h2>
+                <p class="text-slate-300 mt-2">Simplifies complex multi-body motion by tracking the Center of Mass mapped precisely in physical meters relative to a reference coordinate origin.</p>
+                <div class="mt-4 bg-slate-900 p-4 rounded-lg text-center overflow-x-auto">
+                    $$X_{\text{cm}} = \frac{m_1 x_1 + m_2 x_2}{m_1 + m_2}$$
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4 shadow">
+                    <h3 class="font-bold text-lg text-slate-200">Mass Controls</h3>
+                    <div>
+                        <label class="text-xs text-slate-400">Mass 1 ($m_1$ at 1.0 m): <span id="val-m1" class="text-blue-400 font-bold">10 kg</span></label>
+                        <input type="range" id="input-m1" min="1" max="50" value="10" class="w-full accent-blue-500 mt-1" oninput="drawCenterOfMass()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Mass 2 ($m_2$ at 5.0 m): <span id="val-m2" class="text-blue-400 font-bold">30 kg</span></label>
+                        <input type="range" id="input-m2" min="1" max="50" value="30" class="w-full accent-blue-500 mt-1" oninput="drawCenterOfMass()">
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded text-sm space-y-1">
+                        <p>Center of Mass Location: <span id="out-xcm" class="font-bold text-green-400">0</span> m</p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
+                    <canvas id="canvas-cm" width="600" height="300" class="w-full h-auto"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Gravitation and Astronomy -->
+        <section id="sec-gravitation" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-400">4. Gravitation & Orbital Astrophysics</h2>
+                <p class="text-slate-300 mt-2">Connects universal gravitation to orbital velocities and Keplerian periods around planetary masses.</p>
+                <div class="mt-4 bg-slate-900 p-4 rounded-lg text-center overflow-x-auto">
+                    $$v_{\text{orbit}} = \sqrt{\frac{G M}{r}} \quad | \quad T = 2\pi \sqrt{\frac{r^3}{G M}}$$
+                </div>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4 shadow">
+                <h3 class="font-bold text-lg text-slate-200">Orbital Calculator</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400">Central Body Mass ($M$ in Earth Masses):</label>
+                        <input type="number" id="input-mass-m" value="1" step="0.1" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcOrbitalMotion()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Orbital Altitude ($h$ in km):</label>
+                        <input type="number" id="input-orbit-r" value="400" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcOrbitalMotion()">
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-lg flex justify-around text-center">
+                    <div>
+                        <p class="text-xs text-slate-400">Orbital Speed</p>
+                        <p id="out-vorbit" class="text-xl font-bold text-blue-400">0 km/s</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Orbital Period</p>
+                        <p id="out-torbit" class="text-xl font-bold text-green-400">0 min</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Motors, Torque & Energy -->
+        <section id="sec-motors" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-400">5. Motors, Torque & Rotational Energy</h2>
+                <p class="text-slate-300 mt-2">Examines rotational dynamics and mechanical power output conversion from electrical systems.</p>
+                <div class="mt-4 bg-slate-900 p-4 rounded-lg text-center overflow-x-auto">
+                    $$\tau = F r \sin\theta \quad | \quad P_{\text{mech}} = \tau \omega = \tau \left(\frac{2\pi N}{60}\right)$$
+                </div>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4 shadow">
+                <h3 class="font-bold text-lg text-slate-200">Motor Output Analyzer</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400">Motor Torque ($\tau$ in N·m):</label>
+                        <input type="number" id="input-torque" value="45" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcMotorPower()">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Rotational Speed ($N$ in RPM):</label>
+                        <input type="number" id="input-rpm" value="3000" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" oninput="calcMotorPower()">
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-lg flex justify-around text-center">
+                    <div>
+                        <p class="text-xs text-slate-400">Angular Velocity ($\omega$)</p>
+                        <p id="out-omega" class="text-xl font-bold text-blue-400">0 rad/s</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Mechanical Power Output</p>
+                        <p id="out-power" class="text-xl font-bold text-green-400">0 kW</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Stress, Strain and Moduli of Elasticity -->
+        <section id="sec-solids" class="hidden space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-400">6. Mechanics of Solids: Stress, Strain & Elasticity</h2>
+                <p class="text-slate-300 mt-2">Investigates material deformation, tensile stress, and wire elongation ($\Delta L$) under varying loads.</p>
+                <div class="mt-4 bg-slate-900 p-4 rounded-lg text-center overflow-x-auto">
+                    $$\sigma = \frac{F}{A} \quad | \quad \varepsilon = \frac{\Delta L}{L_0} \quad | \quad Y = \frac{\sigma}{\varepsilon} = \frac{F L_0}{A \Delta L}$$
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4 shadow">
+                    <h3 class="font-bold text-lg text-slate-200">Elasticity Lab</h3>
+                    <div>
+                        <label class="text-xs text-slate-400">Material Selection:</label>
+                        <select id="select-material" class="w-full p-2 mt-1 bg-slate-900 rounded border border-slate-600 text-white focus:outline-none focus:border-blue-500" onchange="calcElasticity()">
+                            <option value="200e9">Steel (Y = 200 GPa)</option>
+                            <option value="70e9">Aluminum (Y = 70 GPa)</option>
+                            <option value="18e9">Human Bone (Y = 18 GPa)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Suspended Load ($F$): <span id="val-load" class="text-blue-400 font-bold">500 N</span></label>
+                        <input type="range" id="input-load" min="50" max="5000" value="500" class="w-full accent-blue-500 mt-1" oninput="calcElasticity()">
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded text-sm space-y-1">
+                        <p>Tensile Stress ($\sigma$): <span id="out-stress" class="font-bold text-blue-400">0</span> MPa</p>
+                        <p>Wire Elongation ($\Delta L$): <span id="out-dl" class="font-bold text-green-400">0</span> mm</p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow">
+                    <canvas id="canvas-solid" width="600" height="300" class="w-full h-auto"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Scripts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]
+            });
+            runProjectileSim();
+            calcCollisionForce();
+            drawCenterOfMass();
+            calcOrbitalMotion();
+            calcMotorPower();
+            calcElasticity();
+        });
+
+        function switchTab(tabId) {
+            const tabs = ['projectile', 'laws', 'particles', 'gravitation', 'motors', 'solids'];
+            tabs.forEach(id => {
+                document.getElementById(`sec-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${id}`).className = 'px-4 py-3 text-slate-400 hover:text-blue-400 text-sm whitespace-nowrap transition';
+            });
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).className = 'tab-active px-4 py-3 text-sm whitespace-nowrap transition';
+        }
+
+        // 1. Projectile Motion (Meter Scale)
+        function runProjectileSim() {
+            const v0 = parseFloat(document.getElementById('input-v0').value);
+            const deg = parseFloat(document.getElementById('input-angle').value);
+            document.getElementById('val-v0').innerText = `${v0} m/s`;
+            document.getElementById('val-angle').innerText = `${deg}°`;
+
+            const g = 9.81;
+            const rad = deg * (Math.PI / 180);
+            const T = (2 * v0 * Math.sin(rad)) / g;
+            const H = (v0 * v0 * Math.sin(rad) * Math.sin(rad)) / (2 * g);
+            const R = (v0 * v0 * Math.sin(2 * rad)) / g;
+
+            document.getElementById('out-proj-r').innerText = R.toFixed(2);
+            document.getElementById('out-proj-h').innerText = H.toFixed(2);
+            document.getElementById('out-proj-t').innerText = T.toFixed(2);
+
+            const canvas = document.getElementById('canvas-projectile');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const scale = 500 / Math.max(R, 50); 
+            const originX = 40;
+            const originY = 260;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            for (let t = 0; t <= T; t += T / 100) {
+                const x = v0 * Math.cos(rad) * t;
+                const y = (v0 * Math.sin(rad) * t) - (0.5 * g * t * t);
+                const cx = originX + (x * scale);
+                const cy = originY - (y * scale);
+                if (t === 0) ctx.moveTo(cx, cy);
+                else ctx.lineTo(cx, cy);
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px sans-serif';
+            ctx.fillText("0 m", originX, originY + 15);
+            ctx.fillText(`${R.toFixed(1)} m`, originX + (R * scale) - 20, originY + 15);
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 1;
+            ctx.moveTo(30, originY);
+            ctx.lineTo(570, originY);
+            ctx.stroke();
+        }
+
+        // 2. Laws of Motion
+        function calcCollisionForce() {
+            const m = parseFloat(document.getElementById('input-car-m').value) || 0;
+            const u = parseFloat(document.getElementById('input-car-u').value) || 0;
+            const dt = parseFloat(document.getElementById('input-car-dt').value) || 0.01;
+            const dp = m * u;
+            const f = dp / dt;
+            document.getElementById('out-car-dp').innerText = `${dp.toFixed(0)} N·s`;
+            document.getElementById('out-car-f').innerText = `${(f / 1000).toFixed(2)} kN`;
+        }
+
+        // 3. System of Particles & COM (Meter Units with Reference Axis)
+        function drawCenterOfMass() {
+            const m1 = parseFloat(document.getElementById('input-m1').value);
+            const m2 = parseFloat(document.getElementById('input-m2').value);
+            document.getElementById('val-m1').innerText = `${m1} kg`;
+            document.getElementById('val-m2').innerText = `${m2} kg`;
+
+            const x1_m = 1.0; 
+            const x2_m = 5.0; 
+            const xcm_m = (m1 * x1_m + m2 * x2_m) / (m1 + m2);
+
+            document.getElementById('out-xcm').innerText = `${xcm_m.toFixed(2)} m`;
+
+            const canvas = document.getElementById('canvas-cm');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const scale = 80;
+            const originX = 60;
+            const px1 = originX + (x1_m * scale);
+            const px2 = originX + (x2_m * scale);
+            const pxCM = originX + (xcm_m * scale);
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 4;
+            ctx.moveTo(originX, 150);
+            ctx.lineTo(originX + (6 * scale), 150);
+            ctx.stroke();
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px sans-serif';
+            for (let m = 0; m <= 6; m++) {
+                let tickX = originX + (m * scale);
+                ctx.fillRect(tickX, 145, 2, 10);
+                ctx.fillText(`${m}m`, tickX - 5, 170);
+            }
+
+            ctx.beginPath();
+            ctx.arc(px1, 150, 10 + m1 * 0.4, 0, 2 * Math.PI);
+            ctx.fillStyle = '#3b82f6';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(px2, 150, 10 + m2 * 0.4, 0, 2 * Math.PI);
+            ctx.fillStyle = '#10b981';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(pxCM, 150, 8, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillText(`CM (${xcm_m.toFixed(2)}m)`, pxCM - 25, 120);
+        }
+
+        // 4. Gravitation & Astronomy
+        function calcOrbitalMotion() {
+            const M = parseFloat(document.getElementById('input-mass-m').value) * 5.972e24;
+            const r = 6371e3 + (parseFloat(document.getElementById('input-orbit-r').value) * 1000);
+            const v = Math.sqrt((6.674e-11 * M) / r);
+            const T_sec = 2 * Math.PI * Math.sqrt(Math.pow(r, 3) / (6.674e-11 * M));
+            document.getElementById('out-vorbit').innerText = `${(v / 1000).toFixed(2)} km/s`;
+            document.getElementById('out-torbit').innerText = `${(T_sec / 60).toFixed(1)} min`;
+        }
+
+        // 5. Motors, Torque & Energy
+        function calcMotorPower() {
+            const torque = parseFloat(document.getElementById('input-torque').value) || 0;
+            const rpm = parseFloat(document.getElementById('input-rpm').value) || 0;
+            const omega = (2 * Math.PI * rpm) / 60;
+            const powerKW = (torque * omega) / 1000;
+            document.getElementById('out-omega').innerText = `${omega.toFixed(2)} rad/s`;
+            document.getElementById('out-power').innerText = `${powerKW.toFixed(2)} kW`;
+        }
+
+        // 6. Stress, Strain and Moduli of Elasticity
+        function calcElasticity() {
+            const Y = parseFloat(document.getElementById('select-material').value);
+            const F = parseFloat(document.getElementById('input-load').value);
+            document.getElementById('val-load').innerText = `${F} N`;
+
+            const L0 = 2.0; 
+            const radius = 0.002; 
+            const A = Math.PI * radius * radius;
+
+            const stress = F / A; 
+            const strain = stress / Y; 
+            const dL = strain * L0; 
+
+            document.getElementById('out-stress').innerText = (stress / 1e6).toFixed(2);
+            document.getElementById('out-dl').innerText = (dL * 1000).toFixed(3);
+
+            const canvas = document.getElementById('canvas-solid');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(250, 20, 100, 10);
+
+            const stretchPx = Math.min(strain * 50000, 60);
+            ctx.beginPath();
+            ctx.strokeStyle = '#eab308';
+            ctx.lineWidth = 3;
+            ctx.moveTo(300, 30);
+            ctx.lineTo(300, 160 + stretchPx);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(275, 160 + stretchPx, 50, 40);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px sans-serif';
+            ctx.fillText(`${F} N`, 288, 185 + stretchPx);
+        }
+    </script>
+</body>
+</html>
